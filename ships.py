@@ -1,34 +1,22 @@
 
 class Ship():
-    def __init__(self): 
-        self.name = ""
-        self.length = "" #use length to determine how many spaces a ship takes when placed
-        self.symbol = ""
+    def __init__(self, name, length, symbol): 
+        self.name = name
+        self.length = length #use length to determine how many spaces a ship takes when placed
+        self.symbol = symbol
 
 class  Destroyer(Ship):
     def __init__(self):
-        super().__init__()
-        self.name = "Destroyer"
-        self.length = 2 
-        self.symbol = "D"
+        super().__init__("Destroyer", 2, "D")
 
 class Submarine(Ship):
     def __init__(self):
-        super().__init__()
-        self.name = "Submarine"
-        self.length = 3 
-        self.symbol = "S"
+        super().__init__("Submarine", 3, "S")
 
 class Battleship(Ship):
     def __init__(self):
-        super().__init__()
-        self.name = "Battleship"
-        self.length = 4 
-        self.symbol = "B"
+        super().__init__("Battleship", 4, "B")
 
 class AircraftCarrier(Ship):
     def __init__(self):
-        super().__init__()
-        self.name = "Aircraft Carrier"
-        self.length = 5 
-        self.symbol = "A"
+        super().__init__("Aircraft Carrier", 5, "A")

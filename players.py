@@ -58,7 +58,7 @@ class Player():
         chosen_row = int(input("Select row(y): ")) - 1
         chosen_column = int(input("Select column(x): ")) - 1
         self.target_grid[chosen_row].pop(chosen_column) #your grid
-        if player.ocean_grid[chosen_row][chosen_column] != "W" or "O": #change to ENEMY'S ocean grid
+        if player.ocean_grid[chosen_row][chosen_column] != "W" or "O": #O may be unnecessary, O should not show on oceangrids
             self.target_grid[chosen_row].insert(chosen_column, "X") #your grid
             #+1 point if i change to that
         else:
@@ -78,22 +78,36 @@ class Player():
                 print("ship destroyed")
 
     def place_ships(self):
-
-        for ship in self.fleet: #if a space == w, and the following length spaces, place(turn w into ship id)
-            print(f"Place your {ship.name}")
-            chosen_row = int(input("Select row(y): ")) - 1
-            chosen_column = int(input("Select column(x): ")) - 1
-            choice = input("Vert or Horiz")
-            if choice == 'V':
-                for row in self.ocean_grid[chosen_column]:
-                    for row in range(self.fleet[0].length):
-                        self.target_grid[chosen_row].insert(chosen_column, self.fleet[0].name)
-                #pass #check rows at column position
-            if choice == 'H':
-                pass #check columns at row psotion
+        chosen_row = int(input("Select row(y): ")) - 1
+        chosen_column = int(input("Select column(x): ")) - 1
+        place = self.ocean_grid[chosen_row][chosen_column]
+        for spot in self.ocean_grid[chosen_row]:
+            for 
+            if spot == "W":
+                place = self.fleet[0].symbol
 
 
-            #if self.ocean_grid[chosen_row][chosen_column] == "W":
+
+
+
+
+
+
+        # Your logic actually looks solid in terms of approach (using the nested for loop, setting the number of spots using range and the length of the ship). But focusing on a single axis will help build some confidence on your logic before expanding it.
+        # for ship in self.fleet: #if a space == w, and the following length spaces, place(turn w into ship id)
+        #     print(f"Place your {ship.name}")
+        #     chosen_row = int(input("Select row(y): ")) - 1
+        #     chosen_column = int(input("Select column(x): ")) - 1
+        #     choice = input("Vert or Horiz")
+        #     if choice == 'V':
+        #         for row in range(self.fleet[0].length):
+        #         #pass #check rows at column position
+        #     if choice == 'H':
+        #         for column in self.ocean_grid[chosen_row]:
+        #             pass #check columns at row psotion
+
+
+        #     #if self.ocean_grid[chosen_row][chosen_column] == "W":
 
             
 
