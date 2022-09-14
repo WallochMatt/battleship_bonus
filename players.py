@@ -1,4 +1,4 @@
-from ships import AircraftCarrier, Battleship, Destroyer, Ship, Submarine
+from ships import AircraftCarrier, Battleship, Destroyer, Submarine
 
 
 
@@ -53,14 +53,15 @@ class Player():
         self.grid_printer(self.ocean_grid)
 
 
-
+#seems to work for player 1
     def select_coordinates(self, player):#maybe use opp grid as a parameter
         chosen_row = int(input("Select row(y): ")) - 1
         chosen_column = int(input("Select column(x): ")) - 1
         self.target_grid[chosen_row].pop(chosen_column) #your grid
-        if player.ocean_grid[chosen_row][chosen_column] != "W" or "O": #O may be unnecessary, O should not show on oceangrids
+        if player.ocean_grid[chosen_row][chosen_column] != "W":
             self.target_grid[chosen_row].insert(chosen_column, "X") #your grid
             #+1 point if i change to that
+            #check_for_ships()
         else:
             self.target_grid[chosen_row].insert(chosen_column, "O")
 
@@ -77,14 +78,78 @@ class Player():
                 player.fleet.remove(ship) #enemy ship removed when destroyed, it wont check for it in further instances
                 print("ship destroyed")
 
-    def place_ships(self):
-        chosen_row = int(input("Select row(y): ")) - 1
-        chosen_column = int(input("Select column(x): ")) - 1
-        place = self.ocean_grid[chosen_row][chosen_column]
-        for spot in self.ocean_grid[chosen_row]:
-            for 
-            if spot == "W":
-                place = self.fleet[0].symbol
+
+#modulus?
+    def place_ships(self):#(row[chosen_column]
+        #might want to do "for ship in fleet, place ship: ", type of thing
+        #chosen_ship = self.fleet[int(input("Select ship: ")) - 1]
+
+        for ship in self.fleet: #if a space == w, and the following length spaces, place(turn w into ship id)
+            print(f"Place your {ship.name}")
+            chosen_row = int(input("Select row(y): ")) - 1
+            chosen_column = int(input("Select column(x): ")) - 1
+
+            choice = input("Direction") #do opposite for Horiz
+            if choice == 'Down':
+                for row in range(chosen_column, (chosen_column + ship.length)):
+                    if self.ocean_grid[row][chosen_column] == "W":
+                        self.ocean_grid[row][chosen_column] = ship.symbol
+                    #it prints from top to down
+            
+            elif choice == 'Up':
+                for row in range(chosen_column , (chosen_column - ship.length), -1):
+                    if self.ocean_grid[row][chosen_column] == "W":
+                        self.ocean_grid[row][chosen_column] = ship.symbol
+                    
+                 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # p = 0
+        # while p < chosen_ship.length:
+
+        #     chosen_row = int(input("Select row(y): ")) - 1
+        #     chosen_column = int(input("Select column(x): ")) - 1
+        #     place = self.ocean_grid[chosen_row][chosen_column]
+
+        #     if place == "W":
+
+        #         self.ocean_grid[chosen_row][chosen_column] = chosen_ship.symbol
+        #         p += 1
+
+        #print_grid
+
+
+
+
+
+
+
+
+
+
+        # for spot in self.ocean_grid:
+        #     if spot[chosen_column] == "W":
+        #        spot[chosen_column] = chosen_ship.symbol
+
+
+
+
+
+        # for spot in range((self.ocean_grid[(chosen_row - chosen_ship.length)]), (chosen_ship.length * 2)): #start at place(or ships length earlier)
+        #     if spot == "P":
+        #         place = self.fleet[chosen_ship].symbol
 
 
 
