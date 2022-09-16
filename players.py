@@ -32,7 +32,21 @@ class Player():
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
     ] 
+#I CAN AUTO MATE THIS GRID WITH A FUNCTION,WHICH COULD ALLOW THE PLAYER TO CHOOSE THE SIZE OF THE BOARD
+#AND CONSIDER CREATING A BOARD CLASS
 
+        self.temp_testing = self.ocean_grid = [
+    ["D", "D", "W", "W", "W", "W", "W", "W", "W", "W"],
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    ["S", "S", "S", "W", "W", "W", "W", "W", "W", "W"],
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    ["B", "B", "B", "B", "W", "W", "W", "W", "W", "W"],
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    ["A", "A", "A", "A", "A", "W", "W", "W", "W", "W"],
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
+    ] 
 
     def grid_printer(self, grid):
         print("       1    2    3    4    5    6    7    8    9    10")
@@ -55,66 +69,68 @@ class Player():
 #might rename to choose_target
 #add minor error handling
     def select_coordinates(self, player):#maybe use opp grid as a parameter
-        chosen_row = int(input("Select row(y): ")) - 1
-        chosen_column = int(input("Select column(x): ")) - 1
-        self.target_grid[chosen_row].pop(chosen_column) #your grid
-        if player.ocean_grid[chosen_row][chosen_column] != "W":
-            self.target_grid[chosen_row].insert(chosen_column, "X") #your grid
-            #+1 point if i change to that
-            self.check_for_ships(player) #should be the enemy player
+        try:
+            chosen_row = int(input("Select row(y): ")) - 1
+            chosen_column = int(input("Select column(x): ")) - 1
+            self.target_grid[chosen_row].pop(chosen_column) #your grid
+            if player.temp_testing[chosen_row][chosen_column] != "W": #change temp back to ocean
+                self.target_grid[chosen_row].insert(chosen_column, "X") #your grid
 
-        else:
-            self.target_grid[chosen_row].insert(chosen_column, "O")
+                player.temp_testing[chosen_row].pop(chosen_column)
+                player.temp_testing[chosen_row].insert(chosen_column, "X") #enemy grid
+            
+                self.check_for_ships(player) #should be the enemy player
 
-#i could give players points anytime hey turn S to X
-#player attacks should also be reflected on enemy board
+            else:
+                self.target_grid[chosen_row].insert(chosen_column, "O")
+        except:
+            print("Invalid input, please try again")
+            self.select_coordinates(player)
+
 
     def check_for_ships(self, player): #opposite player as parameter
         for ship in player.fleet:
-            ship_id = self.fleet.symbol #trying to specify any ship symbols #might need ship.symbol
+            ship_id = ship.symbol #trying to specify any ship symbols #might need ship.symbol
             ship_track = 0
-            for row in player.ocean_grid: #enemny ocean grid
+            for row in player.temp_testing: #enemny ocean grid #change back
                 ship_track += row.count(ship_id)
             if ship_track == 0:
                 player.fleet.remove(ship) #enemy ship removed when destroyed, it wont check for it in further instances
                 print("ship destroyed")
-            #might add apoint value and add to an IV for points
 
 #modulus?
-    def place_ships(self, ship):#This needs error handling, really bad
-        #NEEDS TO HAVE COORDINATES ERROR HANDLING
-
-        #for ship in self.fleet: #if a space == w, and the following length spaces, place(turn w into ship id)
+    def place_ships(self, ship):
             try:
                 print(f"Place your {ship.name}")
                 chosen_row = int(input("Select row(y): ")) - 1
                 chosen_column = int(input("Select column(x): ")) - 1
 
-                choice = int(input("1:UP    2:Down       3:Right     4:Left")) #do opposite for Horiz
+                choice = int(input("1:UP    2:Down       3:Right     4:Left"))
 
-                #ELSE?
                 if choice == 1:#UP
-                    for row in range(chosen_column , (chosen_column - ship.length), -1):
-                        if self.ocean_grid[row][chosen_column] == "W":
-                            #self.ocean_grid[chosen_row][chosen_column] = ship.symbol
-                            self.ocean_grid[row][chosen_column] = ship.symbol
+                    for distance in range(chosen_column , (chosen_column - ship.length), -1):
+                        if self.ocean_grid[chosen_row][chosen_column] == "W":
+                            self.ocean_grid[chosen_row][chosen_column] = ship.symbol
+                            chosen_row -= 1 # chosen_row = chosen_row + variable_for_direction???
                         else:
                             print("There is a ship here already")
                             self.place_ships(ship)
                 
                 elif choice == 2:#DOWN
-                    for row in range(chosen_column, (chosen_column + ship.length)):
-                        if self.ocean_grid[row][chosen_column] == "W":
-                            self.ocean_grid[row][chosen_column] = ship.symbol
+                    for distance in range(chosen_column, (chosen_column + ship.length)):
+                        if self.ocean_grid[chosen_row][chosen_column] == "W":
+                            self.ocean_grid[chosen_row][chosen_column] = ship.symbol
+                            chosen_row += 1
 
                         else:
                             print("There is a ship here already")
                             self.place_ships(ship)
                 
                 elif choice == 3:#RIGHT
-                    for column in range(chosen_row, (chosen_row + ship.length)):
-                        if self.ocean_grid[chosen_row][column] == "W":
-                            self.ocean_grid[chosen_row][column] = ship.symbol
+                    for distance in range(chosen_row, (chosen_row + ship.length)):
+                        if self.ocean_grid[chosen_row][chosen_column] == "W":
+                            self.ocean_grid[chosen_row][chosen_column] = ship.symbol
+                            chosen_column += 1
 
                         
                         else:
@@ -122,9 +138,10 @@ class Player():
                             self.place_ships(ship)
 
                 elif choice == 4:#LEFT
-                    for column in range(chosen_row, (chosen_row - ship.length), -1):
-                        if self.ocean_grid[chosen_row][column] == "W":
-                            self.ocean_grid[chosen_row][column] = ship.symbol
+                    for distance in range(chosen_row, (chosen_row - ship.length), -1):
+                        if self.ocean_grid[chosen_row][chosen_column] == "W":
+                            self.ocean_grid[chosen_row][chosen_column] = ship.symbol
+                            chosen_row -= 1
 
                         
                         else:
@@ -133,38 +150,18 @@ class Player():
             except:
                 print("Critical Error: Restarting ship placement process")
                 self.place_ships(ship)
-            # if choice < 0 or choice > 4:
-            #     raise Exception("Must be between 1 and 4")
-
-
+           
 
     def set_board(self):
         for ship in self.fleet:
             self.place_ships(ship)
 
 
-
-
-
-
-
-        # Your logic actually looks solid in terms of approach (using the nested for loop, setting the number of spots using range and the length of the ship). But focusing on a single axis will help build some confidence on your logic before expanding it.
-        # for ship in self.fleet: #if a space == w, and the following length spaces, place(turn w into ship id)
-        #     print(f"Place your {ship.name}")
-        #     chosen_row = int(input("Select row(y): ")) - 1
-        #     chosen_column = int(input("Select column(x): ")) - 1
-        #     choice = input("Vert or Horiz")
-        #     if choice == 'V':
-        #         for row in range(self.fleet[0].length):
-        #         #pass #check rows at column position
-        #     if choice == 'H':
-        #         for column in self.ocean_grid[chosen_row]:
-        #             pass #check columns at row psotion
-
-
-        #     #if self.ocean_grid[chosen_row][chosen_column] == "W":
-
-            
-
+    # def board_size(self):
+    #     size = input("Choose the size of the board x^2: ")
+    #     grid = []
+    #     i = 0
+    #     while i < size:
+    #         grid.append("W")
 
 
