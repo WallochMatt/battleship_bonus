@@ -14,12 +14,15 @@ class Board():
         self.user_2.display_ocean_grid()
         self.user_2.set_board()
 
-        while len(self.user_1.fleet) > 0 and len(self.user_2.fleet) > 0:
+        game_on = True
+        while game_on == True:
 
             print("\n" + f"{self.user_1.name}" + "\n")
             self.user_1.display_target_grid()
             self.user_1.display_ocean_grid()
-            self.user_1.select_coordinates(self.user_2)
+            game_on = self.user_1.select_coordinates(self.user_2)
+            if game_on == False:
+                break
             
             input("\n" + "SWAP PLAYER - PRESS ENTER" + "\n")
 
@@ -27,11 +30,17 @@ class Board():
             print("\n" + f"{self.user_2.name}" + "\n")
             self.user_2.display_target_grid()
             self.user_2.display_ocean_grid()
-            self.user_2.select_coordinates(self.user_1)
+            game_on = self.user_2.select_coordinates(self.user_1)
+            if game_on == False:
+                break
 
             input("\n" + "SWAP PLAYER - PRESS ENTER" + "\n")
 
-
+        self.game_over()
+    
+    
+    
+    
     def game_over(self):
         if len(self.user_1.fleet) == 0:
             print(f"{self.user_2.name} wins!")

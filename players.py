@@ -63,7 +63,7 @@ class Player():
                 player.ocean_grid[chosen_row].pop(chosen_column)
                 player.ocean_grid[chosen_row].insert(chosen_column, "X") #enemy grid
             
-                self.check_for_ships(player)
+                return self.check_for_ships(player)
 
             else:
                 self.target_grid[chosen_row].insert(chosen_column, "O")
@@ -84,7 +84,9 @@ class Player():
                 print("\n" + f"You sunk my {ship.name}!")
             
             if len(player.fleet) == 0:
-                self.game_over()
+                return False
+            else:
+                return True
 
 
     def place_ships(self, ship):
