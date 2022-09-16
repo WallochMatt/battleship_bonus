@@ -1,13 +1,10 @@
 from ships import AircraftCarrier, Battleship, Destroyer, Submarine
 
-
-
 class Player():
-    def __init__(self, name): #add name as argument when on board
+    def __init__(self, name):
         self.name = name
         self.fleet = [Destroyer(), Submarine(), Battleship(), AircraftCarrier()]
-        #points? see check_for_ships
-        self.target_grid = [
+        self.target_grid =  [
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
@@ -18,8 +15,9 @@ class Player():
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
-    ] #GOING TO MAKE SHIPS DESIGNATED BY THE LETTER, this way I can search the list for letters, and if its lackin said letter, the ship is destroyed
-    #enemy attacks will have to target ocean grid, but give feedback to the attacking player's target grid...
+    ] 
+        
+        #HEY!: A testing version of ocean grid is located below, paste it and comment out set_board() in the board.py module!
         self.ocean_grid = [
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
@@ -32,22 +30,9 @@ class Player():
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
     ] 
-#I CAN AUTO MATE THIS GRID WITH A FUNCTION,WHICH COULD ALLOW THE PLAYER TO CHOOSE THE SIZE OF THE BOARD
+
+#I CAN AUTOMATE THIS GRID WITH A FUNCTION,WHICH COULD ALLOW THE PLAYER TO CHOOSE THE SIZE OF THE BOARD
 #AND CONSIDER CREATING A BOARD CLASS
-
-        self.temp_testing = self.ocean_grid = [
-    ["D", "D", "W", "W", "W", "W", "W", "W", "W", "W"],
-    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    ["S", "S", "S", "W", "W", "W", "W", "W", "W", "W"],
-    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    ["B", "B", "B", "B", "W", "W", "W", "W", "W", "W"],
-    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    ["A", "A", "A", "A", "A", "W", "W", "W", "W", "W"],
-    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
-    ] 
-
     def grid_printer(self, grid):
         print("       1    2    3    4    5    6    7    8    9    10")
         incrementor = 1
@@ -65,24 +50,24 @@ class Player():
         self.grid_printer(self.ocean_grid)
 
 
-#seems to work for player 1
-#might rename to choose_target
-#add minor error handling
-    def select_coordinates(self, player):#maybe use opp grid as a parameter
+    def select_coordinates(self, player):
         try:
+            print("\n CHOOSE WHERE TO STRIKE!")
             chosen_row = int(input("Select row(y): ")) - 1
             chosen_column = int(input("Select column(x): ")) - 1
             self.target_grid[chosen_row].pop(chosen_column) #your grid
-            if player.temp_testing[chosen_row][chosen_column] != "W": #change temp back to ocean
+            if player.ocean_grid[chosen_row][chosen_column] != "W" and player.ocean_grid[chosen_row][chosen_column] != "X": #enemy
                 self.target_grid[chosen_row].insert(chosen_column, "X") #your grid
+                print("\n HIT")
 
-                player.temp_testing[chosen_row].pop(chosen_column)
-                player.temp_testing[chosen_row].insert(chosen_column, "X") #enemy grid
+                player.ocean_grid[chosen_row].pop(chosen_column)
+                player.ocean_grid[chosen_row].insert(chosen_column, "X") #enemy grid
             
-                self.check_for_ships(player) #should be the enemy player
+                self.check_for_ships(player)
 
             else:
                 self.target_grid[chosen_row].insert(chosen_column, "O")
+                print("\n MISS")
         except:
             print("Invalid input, please try again")
             self.select_coordinates(player)
@@ -92,13 +77,16 @@ class Player():
         for ship in player.fleet:
             ship_id = ship.symbol #trying to specify any ship symbols #might need ship.symbol
             ship_track = 0
-            for row in player.temp_testing: #enemny ocean grid #change back
+            for row in player.ocean_grid: #enemny ocean grid #change back
                 ship_track += row.count(ship_id)
             if ship_track == 0:
                 player.fleet.remove(ship) #enemy ship removed when destroyed, it wont check for it in further instances
-                print("ship destroyed")
+                print("\n" + f"You sunk my {ship.name}!")
+            
+            if len(player.fleet) == 0:
+                self.game_over()
 
-#modulus?
+
     def place_ships(self, ship):
             try:
                 print(f"Place your {ship.name}")
@@ -141,7 +129,7 @@ class Player():
                     for distance in range(chosen_row, (chosen_row - ship.length), -1):
                         if self.ocean_grid[chosen_row][chosen_column] == "W":
                             self.ocean_grid[chosen_row][chosen_column] = ship.symbol
-                            chosen_row -= 1
+                            chosen_column -= 1
 
                         
                         else:
@@ -157,6 +145,7 @@ class Player():
             self.place_ships(ship)
 
 
+    #refactor for grids, to automate and allow selection of size
     # def board_size(self):
     #     size = input("Choose the size of the board x^2: ")
     #     grid = []
@@ -165,3 +154,16 @@ class Player():
     #         grid.append("W")
 
 
+#Replace the ocean grid above with this test version, without using set_grid for faster testing!
+# self.ocean_grid = [
+#     ["D", "D", "W", "W", "W", "W", "W", "W", "W", "W"],
+#     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+#     ["S", "S", "S", "W", "W", "W", "W", "W", "W", "W"],
+#     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+#     ["B", "B", "B", "B", "W", "W", "W", "W", "W", "W"],
+#     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+#     ["A", "A", "A", "A", "A", "W", "W", "W", "W", "W"],
+#     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+#     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+#     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
+#     ] 
