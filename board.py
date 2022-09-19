@@ -6,13 +6,15 @@ class Board():
         self.user_2 = Player("Player 2")
 
     def play_game(self):
-        self.user_1.display_ocean_grid()
         self.user_1.set_board()
+        self.user_1.display_ocean_grid()
 
         input("\n" + "SWAP PLAYER - PRESS ENTER" + "\n")        
 
-        self.user_2.display_ocean_grid()
         self.user_2.set_board()
+        self.user_2.display_ocean_grid()
+
+        input("\n" + "SWAP PLAYER - PRESS ENTER" + "\n")
 
         game_on = True
         while game_on == True:
