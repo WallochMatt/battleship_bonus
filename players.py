@@ -146,8 +146,13 @@ class Player():
                         chosen_row += 1
 
                     else:
-                        print("\n There is a ship here already")
-                        self.place_ships(ship)
+                        chosen_row -= ship.length
+                        for distance in range(chosen_column , (chosen_column + ship.length)):
+                            if self.ocean_grid[chosen_row][chosen_column] == ship.symbol or self.ocean_grid[chosen_row][chosen_column] == "W":
+                                self.ocean_grid[chosen_row][chosen_column] = "W"
+                                chosen_row += 1
+                 
+                        raise Exception("Already a ship here")
             
             elif choice == 3 and (chosen_column + ship.length) <= 10: #RIGHT
                 for distance in range(chosen_row, (chosen_row + ship.length)):
@@ -157,8 +162,13 @@ class Player():
 
                     
                     else:
-                        print("\n There is a ship here already")
-                        self.place_ships(ship)
+                        chosen_column -= ship.length
+                        for distance in range(chosen_column , (chosen_column + ship.length)):
+                            if self.ocean_grid[chosen_row][chosen_column] == ship.symbol or self.ocean_grid[chosen_row][chosen_column] == "W":
+                                self.ocean_grid[chosen_row][chosen_column] = "W"
+                                chosen_column += 1
+                 
+                        raise Exception("Already a ship here")
 
             elif choice == 4 and (chosen_column - ship.length) >= -1: #LEFT
                 for distance in range(chosen_row, (chosen_row - ship.length), -1):
@@ -168,8 +178,13 @@ class Player():
 
                     
                     else:
-                        print("\n There is a ship here already")
-                        self.place_ships(ship)
+                        chosen_column += ship.length
+                        for distance in range(chosen_column , (chosen_column - ship.length), -1):
+                            if self.ocean_grid[chosen_row][chosen_column] == ship.symbol or self.ocean_grid[chosen_row][chosen_column] == "W":
+                                self.ocean_grid[chosen_row][chosen_column] = "W"
+                                chosen_column -= 1
+                 
+                        raise Exception("Already a ship here")
 
             else:
                 print("\n Critical Error: Restarting ship placement")
